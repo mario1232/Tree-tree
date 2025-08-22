@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Linktree</title>
+  <style>
+    :root{--bg:#f3f4f6;--txt:#0f172a;--muted:#6b7280;--pill-gray:#4b5563;--pill-green:#22c55e}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,Inter,Arial}
+    .wrap{max-width:540px;margin:36px auto 64px;padding:0 18px}
+    .logo{display:flex;gap:12px;align-items:center;justify-content:center;margin:6px 0 22px}
+    .mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(180deg,#34d399,#10b981);
+      clip-path:polygon(50% 0,100% 65%,60% 65%,60% 100%,40% 100%,40% 65%,0 65%);box-shadow:0 8px 18px rgba(16,185,129,.45)}
+    .brand{font-weight:900;font-size:38px}
+    .avatar{width:136px;height:136px;border-radius:50%;object-fit:cover;display:block;margin:10px auto 16px;
+      border:6px solid #fff;background:#e5e7eb;box-shadow:0 10px 24px rgba(0,0,0,.12)}
+    .name{font-size:28px;font-weight:900;text-align:center;margin:0 0 6px}
+    .bio{margin:0 0 26px;text-align:center;color:var(--muted)}
+    .links{display:flex;flex-direction:column;gap:22px}
+    .btn{display:block;width:100%;text-align:center;text-decoration:none;color:#fff;
+      padding:24px 22px;border-radius:32px;font-weight:900;font-size:26px;box-shadow:0 12px 26px rgba(0,0,0,.12);
+      border:1px solid rgba(0,0,0,.06);transition:transform .06s,filter .2s}
+    .btn.gray{background:var(--pill-gray)} .btn.green{background:var(--pill-green)}
+    .btn:hover{transform:translateY(-2px);filter:brightness(1.05)}
+    .btn small{display:block;font-size:14px;font-weight:600;color:#eafff2;opacity:.95;margin-top:4px}
+    .status{margin-top:18px;text-align:center;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="logo"><div class="mark"></div><div class="brand">Linktree</div></div>
+
+    <img id="avatar" class="avatar" alt="avatar">
+    <h1 id="name" class="name">Seu Nome</h1>
+    <p id="bio" class="bio">Sua bio aqui</p>
+
+    <div id="links" class="links"></div>
+    <p id="status" class="status">carregando…</p>
+  </main>
+
+  <script>
+    const statusEl = document.getElementById("status");
+    const linksEl  = document.getElementById("links");
+
+    async function load(){
+      try{
+        // se o index.html e o data.json estiverem na mesma pasta do site (GitHub/Netlify), este caminho funciona:
+        const res = await fetch("./data.json", { cache:"no-store" });
+        if(!res.ok) throw new Error("data.json não encontrado");
+        const data = await res.json();
+
+        // perfil
+        document.getElementById("name").textContent  = data.profile?.name || "Seu Nome";
+        document.getElementById("bio").textContent   = data.profile?.bio  || "";
+        document.getElementById("avatar").src        = data.profile?.avatar || "https://unavatar.io/instagram/kelly";
+
+        // links
+        const list = (data.links||[]).filter(x => x.label && x.url && (x.active===undefined || x.active===true));
+        if(!list.length){ statusEl.textContent="Nenhum link ativo."; return; }
+
+        linksEl.innerHTML = "";
+        let alt = 0;
+        for(const it of list){
+          const color = it.color ? it.color : (alt++ % 2 ? "green" : "gray");
+          const a = document.createElement("a");
+          a.className = `btn ${color}`;
+          a.href = it.url; a.target="_blank"; a.rel="noopener noreferrer";
+          a.innerHTML = `${it.emoji ? it.emoji+" " : ""}${it.label}${it.note ? `<small>${it.note}</small>` : ""}`;
+          linksEl.appendChild(a);
+        }
+        statusEl.textContent = "";
+      }catch(e){
+        console.error(e);
+        statusEl.textContent = "Erro ao carregar os dados. Verifique se o arquivo data.json está no mesmo repositório/pasta do site.";
+      }
+    }
+    load();
+  </script>
+</body>
+</html>
