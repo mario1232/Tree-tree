@@ -1,0 +1,13 @@
+{
+  "profile": {
+    "name": "Kelly Nascimento",
+    "bio": "Designer • Conteúdo • Experimentos web",
+    "avatar": "https://unavatar.io/instagram/kelly"
+  },
+  "links": [
+    { "label": "Instagram", "url": "https://instagram.com/kelly", "emoji": "📷", "note": "Conteúdo diário", "active": true,  "color": "gray"  },
+    { "label": "WhatsApp",  "url": "https://wa.me/5599999999999", "emoji": "💬", "note": "Chame no WhatsApp", "active": true,  "color": "green" },
+    { "label": "Portfólio", "url": "https://seuportfolio.com",     "emoji": "🖼️", "note": "Veja meus trabalhos", "active": true,  "color": "gray"  },
+    { "label": "YouTube",   "url": "https://youtube.com/@kelly",   "emoji": "▶️", "note": "",                 "active": false, "color": "green" }
+  ]
+}
